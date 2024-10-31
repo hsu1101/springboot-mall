@@ -46,4 +46,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
 
     }
+
+    @DeleteMapping("products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
+
+        productService.deleteProductById(productId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();//前面不用先去查詢prodcu是否存在，此功能只要確定商品消失不見就可以
+
+    }
 }

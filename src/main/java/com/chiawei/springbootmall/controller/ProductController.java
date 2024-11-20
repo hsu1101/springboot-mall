@@ -1,5 +1,6 @@
 package com.chiawei.springbootmall.controller;
 
+import com.chiawei.springbootmall.constant.ProductCategory;
 import com.chiawei.springbootmall.dto.ProductRequest;
 import com.chiawei.springbootmall.model.Product;
 import com.chiawei.springbootmall.service.ProductService;
@@ -17,9 +18,13 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    //@RequestParam，表示從url中取得到的請求參數
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
-        List<Product> productList = productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search
+    ){
+        List<Product> productList = productService.getProducts(category, search);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);//列表類型不論有沒有查到數據，都要固定回傳200給前端
     }

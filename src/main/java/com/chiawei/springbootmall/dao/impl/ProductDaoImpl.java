@@ -1,7 +1,7 @@
 package com.chiawei.springbootmall.dao.impl;
 
-import com.chiawei.springbootmall.constant.ProductCategory;
 import com.chiawei.springbootmall.dao.ProductDao;
+import com.chiawei.springbootmall.dto.ProductQueryParams;
 import com.chiawei.springbootmall.dto.ProductRequest;
 import com.chiawei.springbootmall.model.Product;
 import com.chiawei.springbootmall.rowmapper.ProductRowMapper;
@@ -24,20 +24,20 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts(ProductCategory category,String search) {
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
         String sql = "SELECT product_id, product_name, category, image_url, price, stock, description," +
                 "created_date, last_modified_date " +
                 "FROM product WHERE 1=1"; //WHERE 1=1，對查詢沒有影響，主要是想讓下面的查詢條件可以自由地接在這個sql語法的後面
         Map<String, Object> map = new HashMap<>();
 
-        if(category != null){
+        if(productQueryParams.getCategory() != null){
             sql = sql + " AND category = :category"; //AND前面要留空白建S
-            map.put("category", category.name());//取出ENUM類型的name
+            map.put("category", productQueryParams.getCategory().name());//取出ENUM類型的name
         }
 
-        if(search != null){
+        if(productQueryParams.getSearch() != null){
             sql = sql + " AND product_name LIKE :search";
-            map.put("search", "%"+ search + "%"); //模糊查詢要寫在map這裡才會生效
+            map.put("search", "%"+ productQueryParams.getSearch() + "%"); //模糊查詢要寫在map這裡才會生效
         }
 
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());

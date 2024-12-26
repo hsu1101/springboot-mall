@@ -1,6 +1,7 @@
 package com.chiawei.springbootmall.controller;
 
 import com.chiawei.springbootmall.constant.ProductCategory;
+import com.chiawei.springbootmall.dto.ProductQueryParams;
 import com.chiawei.springbootmall.dto.ProductRequest;
 import com.chiawei.springbootmall.model.Product;
 import com.chiawei.springbootmall.service.ProductService;
@@ -24,7 +25,11 @@ public class ProductController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search
     ){
-        List<Product> productList = productService.getProducts(category, search);
+        ProductQueryParams productQueryParams = new ProductQueryParams();//方便添加新的查詢條件
+        productQueryParams.setCategory(category);
+        productQueryParams.setSearch(search);
+
+        List<Product> productList = productService.getProducts(productQueryParams);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);//列表類型不論有沒有查到數據，都要固定回傳200給前端
     }

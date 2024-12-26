@@ -1,7 +1,7 @@
 package com.chiawei.springbootmall.service.impl;
 
-import com.chiawei.springbootmall.constant.ProductCategory;
 import com.chiawei.springbootmall.dao.ProductDao;
+import com.chiawei.springbootmall.dto.ProductQueryParams;
 import com.chiawei.springbootmall.dto.ProductRequest;
 import com.chiawei.springbootmall.model.Product;
 import com.chiawei.springbootmall.service.ProductService;
@@ -17,8 +17,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts(ProductCategory category,String search) {
-        return productDao.getProducts(category, search);
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
+        return productDao.getProducts(productQueryParams);
     }
 
     @Override

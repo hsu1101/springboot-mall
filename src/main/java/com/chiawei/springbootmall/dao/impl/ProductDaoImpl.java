@@ -24,10 +24,33 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
+    public Integer countProduct(ProductQueryParams productQueryParams) {
+        String sql = "SELECT count(*) FROM product WHERE 1=1";//查詢有多少筆數
+
+        Map<String, Object> map = new HashMap<>();
+
+        //查詢條件
+        if(productQueryParams.getCategory() != null){
+            sql = sql + " AND category = :category"; //AND前面要留空白建S
+            map.put("category", productQueryParams.getCategory().name());//取出ENUM類型的name
+        }
+
+        if(productQueryParams.getSearch() != null){
+            sql = sql + " AND product_name LIKE :search";
+            map.put("search", "%"+ productQueryParams.getSearch() + "%"); //模糊查詢要寫在map這裡才會生效
+        }
+
+        //queryForObject 通常是用在取count值的地方, Integer.class把count轉換為Integer類型的返回值
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+        return total;
+    }
+
+    @Override
     public List<Product> getProducts(ProductQueryParams productQueryParams) {
         String sql = "SELECT product_id, product_name, category, image_url, price, stock, description," +
                 "created_date, last_modified_date " +
                 "FROM product WHERE 1=1"; //WHERE 1=1，對查詢沒有影響，主要是想讓下面的查詢條件可以自由地接在這個sql語法的後面
+
         Map<String, Object> map = new HashMap<>();
 
         //查詢條件

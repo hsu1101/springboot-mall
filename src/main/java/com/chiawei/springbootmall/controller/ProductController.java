@@ -6,13 +6,17 @@ import com.chiawei.springbootmall.dto.ProductRequest;
 import com.chiawei.springbootmall.model.Product;
 import com.chiawei.springbootmall.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 public class ProductController {
 
@@ -28,7 +32,11 @@ public class ProductController {
 
             // 排序 Sorting
             @RequestParam(defaultValue = "created_date") String orderBy, //表示根據什麼欄位排序
-            @RequestParam(defaultValue = "desc") String sort  //表示使用升序(小到大)或是降序(大到小)來排序
+            @RequestParam(defaultValue = "desc") String sort,  //表示使用升序(小到大)或是降序(大到小)來排序
+
+            //分頁 Pagination 控制分頁功能的參數
+            @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer limit, //此參數為取得幾筆商品數據
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset //表示跳過多少筆數據
 
     ){
         ProductQueryParams productQueryParams = new ProductQueryParams();//方便添加新的查詢條件
@@ -36,6 +44,8 @@ public class ProductController {
         productQueryParams.setSearch(search);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setSort(sort);
+        productQueryParams.setLimit(limit);
+        productQueryParams.setOffset(offset);
 
         List<Product> productList = productService.getProducts(productQueryParams);
 
